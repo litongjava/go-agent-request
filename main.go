@@ -8,12 +8,23 @@ import (
 )
 
 func main() {
-  http.HandleFunc("/get", handler) // 设置路由
+  http.HandleFunc("/hc", hcHandler)          // 设置路由
+  http.HandleFunc("/get", getRequestHandler) // 设置路由
   log.Println("Server is running at http://localhost:8000")
   log.Fatal(http.ListenAndServe(":8000", nil)) // 启动服务器
 }
-
-func handler(w http.ResponseWriter, r *http.Request) {
+func hcHandler(w http.ResponseWriter, r *http.Request) {
+  // 设置响应的HTTP状态码为200 OK
+  w.WriteHeader(http.StatusOK)
+  // 设置响应内容类型为text/plain
+  w.Header().Set("Content-Type", "text/plain")
+  // 发送响应体
+  _, err := w.Write([]byte("OK"))
+  if err != nil {
+    log.Println("Failed to write response:", err)
+  }
+}
+func getRequestHandler(w http.ResponseWriter, r *http.Request) {
   // 检查请求方法是否为POST
   if r.Method != http.MethodPost {
     http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
